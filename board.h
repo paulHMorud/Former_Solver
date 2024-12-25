@@ -1,9 +1,31 @@
+#define E 0
+#define O 1
+#define G 2
+#define R 3
+#define B 4
 
-static int globalTest = 1;
+#define ROW_SIZE 7
+#define COLUMN_SIZE 9
+#define BOARD_SIZE (ROW_SIZE*COLUMN_SIZE)
 
-#define DOWN 9
+#define DOWN ROW_SIZE
 #define LEFT -1
 #define RIGTH 1
-#define UP -9
+#define UP -ROW_SIZE
 
-void initBoard(int* board[]);
+static char color_to_char[] = {
+    [E] = 'E',
+    [B] = 'B',
+    [O] = 'O',
+    [G] = 'G',
+    [R] = 'R'
+};
+
+void markCluster(int clusterBoard[], int board[], int i, int clusterCount);
+int findClusters(int clusterBoard[], int board[], int clusterPositions[]);
+void removeCluster(int board[], int i);
+void dropDown(int board[]);
+void makeMove(int board[], int idx);
+void printBoard(int board[]);
+void printClusterBoard(int clusterBoard[]);
+void resetBoard(int clusterBoard[]);

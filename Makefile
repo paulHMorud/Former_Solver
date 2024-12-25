@@ -1,8 +1,8 @@
 # Variables
 CC = gcc                     # Compiler
-CFLAGS = -Wall -Wextra -g    # Compiler flags
+CFLAGS = -Wall -Wextra -g -Wno-unused-parameter   # Compiler flags
 TARGET = myprogram           # Output program name
-SRC = main.c board.c       # Source files
+SRC = main.c board.c solver.c      # Source files
 OBJ = $(SRC:.c=.o)           # Object files
 
 # Default rule (first target is the default)
