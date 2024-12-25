@@ -21,6 +21,8 @@ void markCluster(int clusterBoard[], int board[], int i, int clusterCount) {
 
 }
 int findClusters(int clusterBoard[], int board[], int clusterPositions[]) {
+    resetBoard(clusterBoard);
+    resetBoard(clusterPositions);
     int clusterCount = 1;
     for (int i = 0; i < BOARD_SIZE; i++) {
         if ((clusterBoard[i] != 0) || (board[i] == E)) {
@@ -32,7 +34,7 @@ int findClusters(int clusterBoard[], int board[], int clusterPositions[]) {
             clusterCount++;
         }
     }
-    return clusterCount-1;
+    return clusterCount;
 }
 
 void removeCluster(int board[], int i) {

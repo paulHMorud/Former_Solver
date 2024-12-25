@@ -7,8 +7,8 @@ int search(int board[], int clusterBoard[], int clusterPositions[], int depth) {
     }
     
     int numberOfClusters = findClusters(clusterBoard, board, clusterPositions);
-    int eval = 100;
-    int min_eval = 100;
+    volatile int eval = 100;
+    volatile int min_eval = 100;
     int copyOfBoard[BOARD_SIZE];
     // int copyNumberOfClusters = 0;
     for (int i = 1; i <= numberOfClusters; i++) {
@@ -29,22 +29,23 @@ int staticEvaluation(int board[], int clusterBoard[], int clusterPositions[]) {
     return findClusters(clusterBoard, board, clusterPositions);
 }
 int findBestMove(int board[], int clusterBoard[], int depth, int clusterPositions[]) {
-    int numberOfClusters = findClusters(clusterBoard, board, clusterPositions);
+    volatile int numberOfClusters = findClusters(clusterBoard, board, clusterPositions);
     int valueOfMoves[numberOfClusters];
-    for (int i = 0; i < numberOfClusters; i++) {
-        valueOfMoves[i] = search(board, clusterBoard, clusterPositions, depth);
+    int copyOfBoard[BOARD_SIZE];
+    for (int i = 1; i <= numberOfClusters; i++) {
+        memcpy(copyOfBoard, board, BOARD_SIZE * sizeof(int));
+        makeMove(copyOfBoard, clusterPositions[i]);
+        valueOfMoves[i] = search(copyOfBoard, clusterBoard, clusterPositions, depth-1);
     }
-    int bestMove = 0;
-    int bestEval = 100;
-    int eval = 50;
-    for (int i = 0; i < numberOfClusters; i++) {
+    volatile int bestMove = 0;
+    volatile int bestEval = 100;
+    volatile int eval = 50;
+    for (int i = 1; i <= numberOfClusters; i++) {
         eval = valueOfMoves[i];
-        printf("%d", eval);
         if (eval < bestEval) {
             bestEval = eval;
-            bestMove = i;
+            bestMove = clusterPositions[i];
         }
     }
-    printf("Best evaluation is: %d", bestEval);
     return bestMove;
 }

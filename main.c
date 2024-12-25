@@ -21,28 +21,25 @@ static int clusterPositions[BOARD_SIZE];
 
 
 int main(int argc, char const *argv[]) {   
-    // BG_RED();
-
-    // int numMoves = 0;
+    int numMoves = 0;
     // volatile int x, y;
-    // while (findClusters(clusterBoard, board, clusterPositions) != 0) {
-    //     printf("\n");
-    //     printBoard(board);
-    //     BG_WHITE();
-    //     printf("\n\nSkriv in input på format (x y): ");
-    //     scanf("%i %i", &x, &y);
-    //     int idx = x*ROW_SIZE+y;
-    //     if (board[idx] == E) {
-    //         resetBoard(clusterBoard);
-    //         continue;
-    //     }
-    //     makeMove(board, idx);
-    //     numMoves++;
-    //     resetBoard(clusterBoard);
-    // }
-    // printf("Congratulerer du fikk det til på dette antall trekk din amøbe: %d,", numMoves);
-    int move = findBestMove(board, clusterBoard, 5, clusterPositions);
-    printf("The best move found is: %d", move);
+    volatile int move;
+    while (findClusters(clusterBoard, board, clusterPositions) > 1) {
+        printf("\n");
+        printBoard(board);
+        BG_WHITE();
+        // printf("\n\nSkriv in input på format (x y): ");
+        // scanf("%i %i", &x, &y);
+        // int idx = x*ROW_SIZE+y;
+        move = findBestMove(board, clusterBoard, 4, clusterPositions);
+        if (board[move] == E) {
+            printf("%d", move);
+            continue;
+        }
+        makeMove(board, move);
+        numMoves++;
+    }
+    printf("Congratulerer du fikk det til på dette antall trekk din amøbe: %d,", numMoves);
     return 0;
 }
 
