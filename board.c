@@ -12,10 +12,10 @@ void markCluster(int clusterBoard[], int board[], int i, int clusterCount) {
     if (i % ROW_SIZE != ROW_SIZE-1 && board[i] == board[i+1] && clusterBoard[i+1] == 0) { //right
         markCluster(clusterBoard, board, i+1, clusterCount);
     }
-    if (i / COLUMN_SIZE != 0 && board[i] == board[i+UP] && clusterBoard[i+UP] == 0) { //up
+    if (i + UP >= 0 && board[i] == board[i+UP] && clusterBoard[i+UP] == 0) { //up
         markCluster(clusterBoard, board, i+UP, clusterCount);
     }
-    if (i / COLUMN_SIZE != COLUMN_SIZE-1 && board[i] == board[i+DOWN] && clusterBoard[i+DOWN] == 0) { //down
+    if (i + DOWN < BOARD_SIZE && board[i] == board[i+DOWN] && clusterBoard[i+DOWN] == 0) { //down
         markCluster(clusterBoard, board, i+DOWN, clusterCount);
     }
 
@@ -34,7 +34,22 @@ int findClusters(int clusterBoard[], int board[], int clusterPositions[]) {
             clusterCount++;
         }
     }
-    return clusterCount;
+    return clusterCount-1;
+}
+
+int findNumberOfClusters(int clusterBoard[], int board[]) {
+    resetBoard(clusterBoard);
+    int clusterCount = 1;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+        if ((clusterBoard[i] != 0) || (board[i] == E)) {
+            continue;
+        }
+        else {
+            markCluster(clusterBoard, board, i, clusterCount);
+            clusterCount++;
+        }
+    }
+    return clusterCount-1;
 }
 
 void removeCluster(int board[], int i) {
@@ -46,10 +61,10 @@ void removeCluster(int board[], int i) {
     if (i % ROW_SIZE != ROW_SIZE-1 && color == board[i+1] && board[i+1] != 0) { //right
         removeCluster(board, i+1);
     }
-    if (i / COLUMN_SIZE != 0 && color == board[i+UP] && board[i+UP] != 0) { //up
+    if (i + UP >= 0 && color == board[i+UP] && board[i+UP] != 0) { //up
         removeCluster(board, i+UP);
     }
-    if (i / COLUMN_SIZE != COLUMN_SIZE-1 && color == board[i+DOWN] && board[i+DOWN] != 0) { //down
+    if (i +DOWN < BOARD_SIZE && color == board[i+DOWN] && board[i+DOWN] != 0) { //down
         removeCluster(board, i+DOWN);
     }
 }

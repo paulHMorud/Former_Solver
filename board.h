@@ -23,6 +23,7 @@ static char color_to_char[] = {
 
 void markCluster(int clusterBoard[], int board[], int i, int clusterCount);
 int findClusters(int clusterBoard[], int board[], int clusterPositions[]);
+int findNumberOfClusters(int clusterBoard[], int board[]);
 void removeCluster(int board[], int i);
 void dropDown(int board[]);
 void makeMove(int board[], int idx);

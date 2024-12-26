@@ -1,6 +1,6 @@
 # Variables
 CC = gcc                     # Compiler
-CFLAGS = -Wall -Wextra -g -Wno-unused-parameter   # Compiler flags
+CFLAGS = -Wall -Wextra -g -Wno-unused-parameter -fsanitize=address   # Compiler flags
 TARGET = myprogram           # Output program name
 SRC = main.c board.c solver.c      # Source files
 OBJ = $(SRC:.c=.o)           # Object files
