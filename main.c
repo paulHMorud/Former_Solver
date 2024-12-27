@@ -32,8 +32,8 @@ int main(int argc, char const *argv[]) {
         printf("\n");
         printBoard(&board);
         BG_WHITE();
-        printf("ClusterBoard: \n");
-        printClusterBoard(&board);
+        // printf("ClusterBoard: \n");
+        // printClusterBoard(&board);
         move = findBestMove(&board, 4);
         savedMoves[numMoves] = move;
         if (board.tiles[move] == E) {

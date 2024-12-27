@@ -51,7 +51,7 @@ int findBestMove(struct board* board, int depth) {
         memcpy(&copyOfBoard, board, sizeof(struct board));
         makeMove(&copyOfBoard, board->clusterPositions[i+1]);
         valueOfMoves[i+1] = search(&copyOfBoard, depth-1);
-        printf("%d ", valueOfMoves[i+1]);
+        //printf("%d ", valueOfMoves[i+1]);
     }
     printf("\n");
     int bestMove = 0;
