@@ -4,98 +4,101 @@
 #include "print_colors.h"
 
 
-void markCluster(int clusterBoard[], int board[], int i, int clusterCount) {
-    clusterBoard[i] = clusterCount;
-    if (i % ROW_SIZE != 0 && board[i] == board[i-1] && clusterBoard[i-1] == 0) { //left
-        markCluster(clusterBoard, board, i-1, clusterCount);
+void markCluster(struct board* board, int i, int clusterCount) {
+    board->clusters[i] = clusterCount;
+    if (i % ROW_SIZE != 0 && board->tiles[i] == board->tiles[i-1] && board->clusters[i-1] == 0) { //left
+        markCluster(board, i-1, clusterCount);
     }
-    if (i % ROW_SIZE != ROW_SIZE-1 && board[i] == board[i+1] && clusterBoard[i+1] == 0) { //right
-        markCluster(clusterBoard, board, i+1, clusterCount);
+    if (i % ROW_SIZE != ROW_SIZE-1 && board->tiles[i] == board->tiles[i+1] && board->clusters[i+1] == 0) { //right
+        markCluster(board, i+1, clusterCount);
     }
-    if (i + UP >= 0 && board[i] == board[i+UP] && clusterBoard[i+UP] == 0) { //up
-        markCluster(clusterBoard, board, i+UP, clusterCount);
+    if (i + UP >= 0 && board->tiles[i] == board->tiles[i+UP] && board->clusters[i+UP] == 0) { //up
+        markCluster(board, i+UP, clusterCount);
     }
-    if (i + DOWN < BOARD_SIZE && board[i] == board[i+DOWN] && clusterBoard[i+DOWN] == 0) { //down
-        markCluster(clusterBoard, board, i+DOWN, clusterCount);
+    if (i + DOWN < BOARD_SIZE && board->tiles[i] == board->tiles[i+DOWN] && board->clusters[i+DOWN] == 0) { //down
+        markCluster(board, i+DOWN, clusterCount);
     }
 
 }
-int findClusters(int clusterBoard[], int board[], int clusterPositions[]) {
-    resetBoard(clusterBoard);
-    resetBoard(clusterPositions);
+int findClusters(struct board* board) {
+    resetBoard(board->clusters);
+    resetBoard(board->clusterPositions);
     int clusterCount = 1;
     for (int i = 0; i < BOARD_SIZE; i++) {
-        if ((clusterBoard[i] != 0) || (board[i] == E)) {
+        if ((board->clusters[i] != 0) || (board->tiles[i] == E)) {
             continue;
         }
         else {
-            markCluster(clusterBoard, board, i, clusterCount);
-            clusterPositions[clusterCount] = i;
+            markCluster(board, i, clusterCount);
+            board->clusterPositions[clusterCount] = i;
             clusterCount++;
         }
     }
     return clusterCount-1;
 }
 
-int findNumberOfClusters(int clusterBoard[], int board[]) {
-    resetBoard(clusterBoard);
+int findNumberOfClusters(struct board* board) {
+    resetBoard(board->clusters);
     int clusterCount = 1;
     for (int i = 0; i < BOARD_SIZE; i++) {
-        if ((clusterBoard[i] != 0) || (board[i] == E)) {
+        if ((board->clusters[i] != 0) || (board->tiles[i] == E)) {
             continue;
         }
         else {
-            markCluster(clusterBoard, board, i, clusterCount);
+            markCluster(board, i, clusterCount);
             clusterCount++;
         }
     }
     return clusterCount-1;
 }
 
-void removeCluster(int board[], int i) {
-    int color = board[i];
-    board[i] = 0;
-    if (i % ROW_SIZE != 0 && color == board[i-1] && board[i-1] != 0) { //left
+void removeCluster(struct board* board, int i) {
+    int color = board->tiles[i];
+    board->tiles[i] = 0;
+    if (i % ROW_SIZE != 0 && color == board->tiles[i-1] && board->tiles[i-1] != 0) { //left
         removeCluster(board, i-1);
     }
-    if (i % ROW_SIZE != ROW_SIZE-1 && color == board[i+1] && board[i+1] != 0) { //right
+    if (i % ROW_SIZE != ROW_SIZE-1 && color == board->tiles[i+1] && board->tiles[i+1] != 0) { //right
         removeCluster(board, i+1);
     }
-    if (i + UP >= 0 && color == board[i+UP] && board[i+UP] != 0) { //up
+    if (i + UP >= 0 && color == board->tiles[i+UP] && board->tiles[i+UP] != 0) { //up
         removeCluster(board, i+UP);
     }
-    if (i +DOWN < BOARD_SIZE && color == board[i+DOWN] && board[i+DOWN] != 0) { //down
+    if (i +DOWN < BOARD_SIZE && color == board->tiles[i+DOWN] && board->tiles[i+DOWN] != 0) { //down
         removeCluster(board, i+DOWN);
     }
 }
 
-void dropDown(int board[]) {
+void dropDown(struct board* board) {
     for (int col = 0; col < ROW_SIZE; col++) {
         int offset = 0;
         for (int row = COLUMN_SIZE-1; row >= 0; row--) {
             int idx = row*ROW_SIZE+col;
-            if (board[idx] == E) {
+            if (board->tiles[idx] == E) {
                 offset++;
             }
             else if (offset != 0) {
-                board[idx+offset*ROW_SIZE]=board[idx];
-                board[idx] = E;
+                board->tiles[idx+offset*ROW_SIZE]=board->tiles[idx];
+                board->tiles[idx] = E;
             }
         }
     }
 }
 
-void makeMove(int board[], int idx) {
+void makeMove(struct board* board, int idx) {
+    if (board->tiles[idx] == E) {
+        return;
+    }
     removeCluster(board, idx);
     dropDown(board);
 }
 
-void printBoard(int board[]) {
+void printBoard(struct board* board) {
     printf("\n");
     for (int i = 0; i < COLUMN_SIZE; i++) {
         for (int j = 0; j < ROW_SIZE; j++) {
             int idx = i*ROW_SIZE+j;
-            int color = board[idx];
+            int color = board->tiles[idx];
             switch (color) 
             {
             case R:
@@ -115,26 +118,26 @@ void printBoard(int board[]) {
                 BG_WHITE();
                 break;
             }
-            char colorChar = color_to_char[board[idx]];
+            char colorChar = color_to_char[board->tiles[idx]];
             printf("%c\t", colorChar); 
         }
         printf("\n");
     }
 }
 
-void printClusterBoard(int clusterBoard[]) {
+void printClusterBoard(struct board* board) {
     printf("\n");
      for (int i = 0; i < COLUMN_SIZE; i++) {
         for (int j = 0; j < ROW_SIZE; j++) {
-            printf("%d\t", clusterBoard[i*ROW_SIZE+j]); 
+            printf("%d\t", board->clusters[i*ROW_SIZE+j]); 
         }
         printf("\n");
     }
 }
 
-void resetBoard(int clusterBoard[]) {
+void resetBoard(int8_t arr[static BOARD_SIZE]) {
     for (int i = 0; i < BOARD_SIZE; i++) {
-        clusterBoard[i] = 0;
+        arr[i] = 0;
     }
 }
 
