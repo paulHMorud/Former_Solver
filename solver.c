@@ -13,11 +13,9 @@ int search(struct board* board, int depth) {
     int eval = 1000000;
     int min_eval = 1000000;
     struct board copyOfBoard;
-    // int copyNumberOfClusters = 0;
     for (int i = 1; i <= numberOfClusters; i++) {
         memcpy(&copyOfBoard, board, sizeof(struct board));
         makeMove(&copyOfBoard, copyOfBoard.clusterPositions[i]);
-        // copyNumberOfClusters = findClusters(copyOfBoard, board, clusterPositions);
         eval = search(&copyOfBoard, depth-1);
         if (eval < min_eval) {
             min_eval = eval;
